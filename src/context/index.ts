@@ -22,6 +22,7 @@ const nonPrimitiveProps: (keyof Config)[] = [
   'AUTH0_EXCLUDED_DEFAULTS',
   'AUTH0_EXCLUDED',
   'AUTH0_INCLUDED_ONLY',
+  'AUTH0_INCLUDED_CONNECTIONS',
   'EXCLUDED_PROPS',
   'INCLUDED_PROPS',
 ];
@@ -71,6 +72,21 @@ export const setupContext = async (
     if (hasExcludedResources && hasIncludedResources) {
       throw new Error(
         'Both AUTH0_EXCLUDED and AUTH0_INCLUDED_ONLY configuration values are defined, only one can be configured at a time. See: https://github.com/auth0/auth0-deploy-cli/blob/master/docs/excluding-from-management.md'
+      );
+    }
+  })(config);
+
+  ((config: Config) => {
+    const hasIncludedConnections =
+      config.AUTH0_INCLUDED_CONNECTIONS !== undefined &&
+      config.AUTH0_INCLUDED_CONNECTIONS.length > 0;
+    const hasExcludedConnections =
+      config.AUTH0_EXCLUDED_CONNECTIONS !== undefined &&
+      config.AUTH0_EXCLUDED_CONNECTIONS.length > 0;
+
+    if (hasIncludedConnections && hasExcludedConnections) {
+      throw new Error(
+        'Both AUTH0_INCLUDED_CONNECTIONS and AUTH0_EXCLUDED_CONNECTIONS configuration values are defined, only one can be configured at a time. See: https://github.com/auth0/auth0-deploy-cli/blob/master/docs/configuring-the-deploy-cli.md#auth0_included_connections'
       );
     }
   })(config);
